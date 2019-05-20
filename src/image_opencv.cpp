@@ -110,10 +110,25 @@ image load_image_cv(char *filename, int channels)
     return im;
 }
 
+VideoWriter* video;
+
 int show_image_cv(image im, const char* name, int ms)
 {
     Mat m = image_to_mat(im);
     imshow(name, m);
+    {
+
+        if(video == NULL){
+            const char* output_name = "predictions.avi";
+            //output_video = cvCreateVideoWriter(output_name, CV_FOURCC('H', '2', '6', '4'), 25, size, 1);
+            video = new VideoWriter(output_name, VideoWriter::fourcc('M','J','P','G'),30, Size(im.w,im.h));
+            //output_video = cvCreateVideoWriter(output_name, CV_FOURCC('M', 'J', 'P', 'G'), 25, size, 1);
+            printf("\n DST output_video = %s  \n", output_name);
+        }
+
+        video->write(m);
+		printf("\n cvWriteFrame \n");
+    }
     int c = waitKey(ms);
     if (c != -1) c = c%256;
     return c;
